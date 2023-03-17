@@ -126,8 +126,9 @@ void setServoPulse(uint8_t n, double pulse) {
 }
 
 
-
 void loop() {
+  // All actions are contained in if statements. This is simplified flag programming and is for testing purposes but is not necessary
+  
   if(false) {
     mpu.update();
   
@@ -141,6 +142,7 @@ void loop() {
       timer = millis();  
     }
   }
+  
   if(false) {
     pwm.setPWM(frontLeftLeg.hipServo, 0, angletoPulse(frontLeftLeg.hipServoPos));
     pwm.setPWM(frontRightLeg.hipServo, 0, angletoPulse(frontRightLeg.hipServoPos));
@@ -159,7 +161,8 @@ void loop() {
   if(false) {
     PID_balance();
   }
-
+  
+  // Preprogrammed up and down motion for all four legs
   if(false) {
     for(int height = 10; height <= 18; height++) {
       setLegHeight(frontLeftLeg, height);
@@ -259,7 +262,9 @@ void walk(Leg leg, int stepLength, bool circular) {
 
   double deltaAngle = atan((double) stepLength/leg.legHeight);
   double newHeight = stepLength / deltaAngle;
-
+  
+  // if circular == true, calculate walk trajectory in a circular manner using circularMotion()
+  // else, perform non-circular walk trajectory where the legs are moved in a straight horizontal line
   if(circular) {
     newHeight = newHeight - circularMotion(leg, stepLength, walkRadius, leg.legHeight);
     double newVertical = sqrt(pow(newHeight, 2) - pow(stepLength, 2));
@@ -300,6 +305,7 @@ void walk(Leg leg, int stepLength, bool circular) {
   
 }
 
+// Return lift off height for leg in a circular motion
 int circularMotion(Leg leg, int stepLength, int radius, int height) {
   double verticalAxis = sqrt(pow(radius, 2) - pow((stepLength - radius), 2));
   double upperLegPos = acos((pow(leg.upperLegLength, 2) + pow(height, 2) - pow(leg.lowerLegLength, 2)) / (2 * leg.upperLegLength * height));
@@ -310,6 +316,7 @@ int circularMotion(Leg leg, int stepLength, int radius, int height) {
 
 }
 
+// Preprogrammed walk motion for legs. Uses millis() to allow for different leg movements simultaneously
 void walkMotion() {
   unsigned long currentTime = millis();
 
@@ -352,6 +359,7 @@ void walkMotion() {
 
 }
 
+// Balance without PID. Only translates the legs according to body orientation, not true balance
 void staticBalance() {
   balanceMode = true;
 
